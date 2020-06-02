@@ -1,0 +1,125 @@
+#include<iostream>
+#include <fstream>
+
+using namespace std;
+
+struct Node
+{
+	string sayThis;
+	Node* yes;
+	Node* no;
+
+};
+
+/***************************************************************************************
+Purpose:
+The purpose of the main function is to create the binary tree, asking questions 
+consisting of nodes that point to different questions based on the user input. Later in
+the function, the serializingDown function is called in order to print the contents of the 
+binary tree to a text file named "ai.txt"
+/****************************************************************************************/
+
+void serializeDown(ofstream&, Node*);
+
+int main()
+{
+	cout << "Answer some questions and I will tell you which Outerbanks tv show character you are: " << endl;
+
+
+	//LEVEL FOUR: the leaf nodes. they do not point to any other node since they are at the end of the tree
+//yes
+	Node h = { "Your outerbanks character is Pope." };
+	Node i = { "You r outerbanks character is Kiara." };
+//no
+	Node j = { "Your outerbanks character is Topper." };
+	Node k = { "Your outerbanks character is Sarah." };
+//yes
+	Node l = { "Your outerbanks character is John B." };
+	Node m = { "Your outerbanks character is Ward." };
+//no
+	Node n = { "Your outerbanks character is JJ." };
+	Node o = { "Your outerbanks character is Rafe." };
+
+	//LEVEL THREE: This is the third set of questions which all point to specific pets
+	//in the fourth level based on whether the user answered with yes or no
+//yes
+	Node d = { "If you had to decide between your future or your friend's future, would you save your friend's?", &h, &i };
+	Node e = { "Would you rather have luxery over leisure?", &j, &k };
+//no
+	Node f = { "Would you give up you dedicate your lifelong dream to family?", &l, &m };
+	Node g = { "If you were in trouble with your friends, would you run?", &n, &o };
+
+	//LEVEL TWO: This is the second set of questions which points to further questions from the
+	// first questions, in order to get more infornation to get a more accurate answer in the end
+	//(which is the fourth level)
+//yes
+	Node b = { "If your friends were in trouble would you risk your life to save them?", &d, &e };
+//no
+	Node c = { "Are you a big dreamer?", &f, &g };
+
+	//LEVEL ONE: "This is the first question asked to get a general idea of what the user prefers
+	//before getting more specific in the second level
+	Node a = { "Do you trust friends over family?", &b, &c};
+
+	Node* top = &a; //the beginning of the tree (the first question)
+	Node* p = top; //moves through the tree
+	string answer;
+
+	/*
+	the pointer p goes through the binary tree based on the user input and asks the correct questions,
+	eventually reaching a conclusion about what would be a good pet for the user (based on their
+	specific preferences
+	*/
+	while (true)
+	{
+		cout << p->sayThis;
+		if (p->yes == 0 && p->no == 0)
+		{
+			break;
+		}
+		cout << "[Y/y/N/n]:" << endl;
+		
+		cin >> answer;
+		if (answer == "Y"|| answer =="y")
+		{
+			p = p->yes;
+
+		}
+		else if (answer == "N"|| answer == "n")
+		{
+			p = p->no;
+		}
+
+		//SERIALIZING DOWN
+		ofstream fout;
+		fout.open("ai.txt");
+		serializeDown(fout, top);
+		fout.close();
+	}
+
+
+	return 0;
+}
+
+/***************************************************************************************
+Purpose:
+The purpose of the serializeDown function is to print all the contents of the binary tree
+to a given text file from the main funciton. This is done by using a recursive function. 
+It outputs whatever pointer p is mointing through, and goes thorugh the whole binary tree.
+The base case for this function if when the pointer p equals 0, which ends the look 
+since it is the end of the file. This is optional and not necessary to play the game.
+***************************************************************************************/
+void serializeDown(ofstream& fout, Node* p)
+{
+	if (p == 0)
+	{
+		//checking for a file
+		fout << "EOF\n";
+	}
+	else
+	{
+		fout << p->sayThis << endl;
+		serializeDown(fout, p->yes);
+		serializeDown(fout, p->no);
+	}
+}
