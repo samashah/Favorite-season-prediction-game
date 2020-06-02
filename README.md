@@ -1,2 +1,2 @@
-# Favorite-season-prediction-game
-A game in c++ that guesses a user's favorite season based on user input.
+# Which-outerbanks-character-are-you
+A game in c++ that decides which character in the Netflix original series Outerbanks matches you.
